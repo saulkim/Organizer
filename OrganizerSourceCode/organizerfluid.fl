@@ -1,0 +1,161 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0305
+header_name {.h}
+code_name {.cxx}
+decl {\#include <iostream>} {public global
+}
+
+decl {\#include <FL/Fl_Check_Button.H>} {public global
+}
+
+class mainGUI {open
+} {
+  Function {createWindow()} {open
+  } {
+    Fl_Window mainWindow {
+      label Organizer open
+      xywh {-32000 -32000 800 600} type Double hide
+    } {
+      Fl_Menu_Bar menuBar {
+        xywh {0 0 800 30}
+      } {
+        MenuItem menuFile {
+          label File
+          xywh {0 0 30 30}
+        }
+        MenuItem menuOptions {
+          label Options
+          xywh {10 10 30 30}
+        }
+        MenuItem menuHelp {
+          label Help
+          xywh {20 20 30 30}
+        }
+      }
+      Fl_Group toolbar {open
+        xywh {0 30 800 70} labeltype NO_LABEL
+      } {
+        Fl_Button todoBtn {
+          label Todo
+          callback todoShow_cb
+          xywh {0 30 70 70}
+        }
+        Fl_Button lastSinceBtn {
+          label LastSince
+          callback lastSinceShow_cb
+          xywh {70 30 70 70}
+        }
+        Fl_Button batteryBtn {
+          label Battery
+          callback batteryShow_cb
+          xywh {140 30 70 70}
+        }
+        Fl_Button mysterySurpriseBtn {
+          label {mystery surprise}
+          xywh {210 30 70 70} align 128
+        }
+        Fl_Button fanSpeedBtn {
+          label {fan speed}
+          callback fanSpeedShow_cb
+          xywh {280 30 70 70} align 128
+        }
+      }
+      Fl_Progress progressBar {
+        xywh {0 100 800 30} box GLEAM_UP_BOX selection_color 79 labeltype NO_LABEL
+      }
+      Fl_Group consoleWindow {open
+        xywh {0 130 800 490} box UP_BOX color 47 selection_color 51 labeltype NO_LABEL
+      } {
+        Fl_Group todoBox {
+          label {to do later} open
+          xywh {0 130 800 470} box UP_BOX color 78 align 0 hide
+        } {}
+        Fl_Group LastSinceBox {open
+          xywh {0 130 800 490} color 83 labeltype NO_LABEL
+        } {
+          Fl_Group tagGroup {
+            xywh {0 130 150 470} box GTK_UP_FRAME color 32 labeltype NO_LABEL
+          } {
+            Fl_Group gearBox {open
+              xywh {0 130 150 90} box DOWN_FRAME color 32 labeltype NO_LABEL
+            } {
+              Fl_Button lsGearBoxBtn {
+                label {gear button}
+                callback lsGearBoxBtn_cb
+                xywh {35 140 70 70}
+              }
+            }
+            Fl_Group tagCheckBoxGroup {open
+              xywh {0 220 150 380} labeltype NO_LABEL hide
+            } {}
+          }
+          Fl_Group outputView {open
+            xywh {150 130 650 470} box GTK_UP_FRAME color 0 labeltype NO_LABEL
+          } {
+            Fl_Group centerView {
+              xywh {150 130 450 470} labeltype NO_LABEL
+            } {
+              Fl_Group refreshBtnGroup {open
+                xywh {150 130 450 90} labeltype NO_LABEL
+              } {
+                Fl_Button lsUpdateBtn {
+                  label update
+                  callback lsUpdateBtn_cb
+                  xywh {220 150 300 45} labelsize 30
+                }
+              }
+              Fl_Group longestLastSinceEntry {
+                label OVERDUE open
+                xywh {150 265 450 185} box UP_BOX color 0 labelsize 30 labelcolor 1 align 512
+              } {}
+            }
+            Fl_Group allLastSinceEntriesGroup {open selected
+              xywh {600 130 200 470} box GTK_UP_FRAME color 0
+            } {}
+          }
+          Fl_Group editView {
+            xywh {150 130 650 470} box GTK_DOWN_FRAME color 24 labeltype NO_LABEL align 0 hide
+          } {
+            Fl_Group lsAddEntryGroup {open
+              xywh {150 130 650 200} labeltype NO_LABEL
+            } {
+              Fl_Input lsEntryTextInput {
+                label {input:}
+                xywh {200 150 400 90} labelsize 15 labelcolor 32 align 132 textsize 16
+              }
+              Fl_Button lsEntryTextInputBtn {
+                label enter
+                callback lsEntryTextInputBtn_cb
+                xywh {620 150 65 25} box GTK_UP_FRAME down_box DOWN_BOX color 0 selection_color 2
+              }
+            }
+          }
+          Fl_Group lastSinceFileReadingErrorGroup {
+            label {FILE READING ERROR} open
+            xywh {150 130 650 470} box UP_BOX color 129 labelsize 50 align 0 hide
+          } {}
+        }
+        Fl_Group batteryBox {open
+          xywh {0 130 800 470} color 83 labeltype NO_LABEL hide
+        } {}
+        Fl_Group fanSpeedBox {open
+          xywh {0 130 800 470} labeltype NO_LABEL hide
+        } {}
+      }
+    }
+  }
+  Function {todoShow_cb(Fl_Widget* obj, void* p)} {open return_type {static void}
+  } {}
+  Function {lastSinceShow_cb(Fl_Widget* obj, void* p)} {open return_type {static void}
+  } {}
+  Function {batteryShow_cb(Fl_Widget* obj, void* p)} {open return_type {static void}
+  } {}
+  Function {lsUpdateBtn_cb(Fl_Widget* obj, void* p)} {open return_type {static void}
+  } {}
+  Function {fanSpeedShow_cb(Fl_Widget* obj, void* p)} {open return_type {static void}
+  } {}
+  Function {lsGearBoxBtn_cb(Fl_Widget* obj, void* p)} {open return_type {static void}
+  } {}
+  Function {lsEntryTextInputBtn_cb(Fl_Widget* obj, void* p)} {open return_type {static void}
+  } {}
+}
