@@ -11,6 +11,7 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_Progress.H>
 #include <FL/Fl_Input.H>
+#include <FL/Fl_Output.H>
 
 class mainGUI {
 public:
@@ -45,6 +46,8 @@ public:
   Fl_Group *lsAddEntryGroup;
   Fl_Input *lsEntryTextInput;
   Fl_Button *lsEntryTextInputBtn;
+  Fl_Group *lsEditTextBottomView;
+  Fl_Output *lsEntryTextConfirmationOutput;
   Fl_Group *lastSinceFileReadingErrorGroup;
   Fl_Group *batteryBox;
   Fl_Group *fanSpeedBox;

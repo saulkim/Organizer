@@ -3,7 +3,7 @@
 
 
 
-int fileManager::readLastSinceFile() { // 0 = successful, 1 = error
+int fileManager::readLastSinceFile() {
 	int state;
 
 	try {
@@ -76,9 +76,6 @@ void fileManager::readLastSinceFiletoData() {
 						break;
 					}
 					else {
-						
-
-
 						lsEntries.tagList += line[i];
 						break;
 					}
@@ -90,7 +87,7 @@ void fileManager::readLastSinceFiletoData() {
 
 		lsFile.close();
 
-		//sorting the lsEntries by largest epoch time(longest ago) to top of list 
+		//sorting the lsEntries by smallest epoch time(longest ago) to top of list 
 		sortLSEntries();
 	}
 }
@@ -99,7 +96,9 @@ void fileManager::readLastSinceFiletoData() {
 
 void fileManager::writeLastSinceToFile(std::vector<int> posOfCheckedButtons) { //format name_last time entry was done in epoch seconds_tag,tag,tag,..._
 
+	//complete write of everything to temp file
 	//write temp file.txt here
+
 	try{
 		lsFile.open("./data/lastSinceEntryTemp.txt", std::fstream::out | std::fstream::trunc); //previous content deleted
 		if (lsFile.good() == false) {
@@ -141,6 +140,41 @@ void fileManager::writeLastSinceToFile(std::vector<int> posOfCheckedButtons) { /
 	}
 }
 
+
+void fileManager::writeLastSinceSingleEntryToFile(std::string str){
+
+	try
+	{ 
+		lsFile.open("./data/lastSinceEntry.txt", std::fstream::out | std::fstream::app); // starts at end of file
+		if (lsFile.good() == false) {
+			throw "error: write new entry messed up";
+			lsFile.close();
+			return;
+		}
+		else {
+			//getting current epoch time to put in as string and +i so that there's no duplicate time
+			std::string timeasString = getCurrentTime();
+			long time = std::stol(timeasString);
+			std::string timeString = std::to_string(time);
+			std::string tags = "placeholder"; //TODO placeholder for tags later
+
+			std::string entryString = str + "_" + timeString + "_" + tags + "_";
+
+			//test code, delete
+			std::cout << lsFile.tellg();
+			//
+
+			lsFile << entryString;
+			lsFile << std::endl; //warning! windows does \n but unix based does \r\n?? so this will prolly unportable, when checking portability see if endl uses the system newline or a \n
+
+			lsFile.clear();
+			lsFile.close();
+		}
+	}
+	catch (std::exception e) {
+		std::cout << "error: gear button entry writing error";
+	}
+}
 
 void fileManager::calcTimeDifference(std::string time) {
 	
@@ -276,5 +310,19 @@ void fileManager::shuffleFileName() {
 	catch (std::exception e) {
 		std::cout << "shuffleFileName() error";
 	}
+
+}
+
+bool fileManager::does_Directory_Exist() {	
+	bool folderHere = false;
+	if (std::filesystem::exists("./data") == true) {
+		folderHere = true;
+	}
+	return folderHere;
+}
+
+void fileManager::create_Directory() {
+
+	std::filesystem::create_directory("./data");
 
 }

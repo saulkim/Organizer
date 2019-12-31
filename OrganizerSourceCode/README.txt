@@ -1,20 +1,35 @@
 --
 lastsince
 --
-update btn to actually refresh
+
+current problem
+-doesnt record first letter of entry properly
+--clicking last since -> clicking gear -> adding entry -> clicking last since btn
+?? however same process but clicking gear icon again results in proper insertion
+??? only the first last since click messes with insertion, reclicking gear icon and going into last since is fine
+fixes
++ clicking on update button before adding entry fixes the no first character bug
++ 2nd and later entries will all enter fine
+?+? sometimes the glitch doesnt show and is not reproducible
+
+
+
 
 function to add insert new lastsince into mainView
 function write to file
 finish parsing tags into vector<string>
-
-
-
 finish gear box to add through gui interface
 finish tag group checkbox for tags
+
+
 
 --
 code improvements
 --
+
+change old functions to word_word_word
++typical cpp standard
+-takes time for something i dont need
 
 move buttoninteraction functions into its own lastsince classes
 +easier to maintain+add onto code
@@ -43,7 +58,7 @@ fanspeed
 
 make a bar somewhere to show quote of the day
 +cool
--
+-takes space
 
 give option to checkbox certain toolbar items
 +customizable and allows easy modability

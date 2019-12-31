@@ -14,7 +14,7 @@ class mainGUI {open
   } {
     Fl_Window mainWindow {
       label Organizer open
-      xywh {-32000 -32000 800 600} type Double hide
+      xywh {1288 240 800 600} type Double visible
     } {
       Fl_Menu_Bar menuBar {
         xywh {0 0 800 30}
@@ -70,8 +70,8 @@ class mainGUI {open
           label {to do later} open
           xywh {0 130 800 470} box UP_BOX color 78 align 0 hide
         } {}
-        Fl_Group LastSinceBox {open
-          xywh {0 130 800 490} color 83 labeltype NO_LABEL
+        Fl_Group LastSinceBox {open selected
+          xywh {0 130 800 490} color 83 labeltype NO_LABEL hide
         } {
           Fl_Group tagGroup {
             xywh {0 130 150 470} box GTK_UP_FRAME color 32 labeltype NO_LABEL
@@ -89,8 +89,8 @@ class mainGUI {open
               xywh {0 220 150 380} labeltype NO_LABEL hide
             } {}
           }
-          Fl_Group outputView {open
-            xywh {150 130 650 470} box GTK_UP_FRAME color 0 labeltype NO_LABEL
+          Fl_Group outputView {
+            xywh {150 130 650 470} box GTK_UP_FRAME color 0 labeltype NO_LABEL hide
           } {
             Fl_Group centerView {
               xywh {150 130 450 470} labeltype NO_LABEL
@@ -109,7 +109,7 @@ class mainGUI {open
                 xywh {150 265 450 185} box UP_BOX color 0 labelsize 30 labelcolor 1 align 512
               } {}
             }
-            Fl_Group allLastSinceEntriesGroup {open selected
+            Fl_Group allLastSinceEntriesGroup {open
               xywh {600 130 200 470} box GTK_UP_FRAME color 0
             } {}
           }
@@ -129,9 +129,17 @@ class mainGUI {open
                 xywh {620 150 65 25} box GTK_UP_FRAME down_box DOWN_BOX color 0 selection_color 2
               }
             }
+            Fl_Group lsEditTextBottomView {open
+              xywh {150 330 650 270}
+            } {
+              Fl_Output lsEntryTextConfirmationOutput {
+                label {output:}
+                xywh {200 355 400 70} labelsize 15 align 132 textsize 16
+              }
+            }
           }
           Fl_Group lastSinceFileReadingErrorGroup {
-            label {FILE READING ERROR} open
+            label {FILE READING ERROR}
             xywh {150 130 650 470} box UP_BOX color 129 labelsize 50 align 0 hide
           } {}
         }

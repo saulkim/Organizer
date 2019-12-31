@@ -134,6 +134,14 @@ Fl_Double_Window* mainGUI::createWindow() {
             } // Fl_Button* lsEntryTextInputBtn
             lsAddEntryGroup->end();
           } // Fl_Group* lsAddEntryGroup
+          { lsEditTextBottomView = new Fl_Group(150, 330, 650, 270);
+            { lsEntryTextConfirmationOutput = new Fl_Output(200, 355, 400, 70, "output:");
+              lsEntryTextConfirmationOutput->labelsize(15);
+              lsEntryTextConfirmationOutput->textsize(16);
+              lsEntryTextConfirmationOutput->align(Fl_Align(132));
+            } // Fl_Output* lsEntryTextConfirmationOutput
+            lsEditTextBottomView->end();
+          } // Fl_Group* lsEditTextBottomView
           editView->end();
         } // Fl_Group* editView
         { lastSinceFileReadingErrorGroup = new Fl_Group(150, 130, 650, 470, "FILE READING ERROR");

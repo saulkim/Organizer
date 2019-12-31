@@ -3,6 +3,8 @@
 #include <FL/Fl_Text_Display.H>
 
 bool isLSEditViewShowing = false; // warning! global variable?
+bool dataFileExists = false; // warning! global variable?
+
 
 void mainGUI::todoShow_cb(Fl_Widget* obj, void* p) {
 
@@ -27,6 +29,7 @@ void mainGUI::lastSinceShow_cb(Fl_Widget* obj, void* p) {
 	}
 	Fl_Group* lastSinceBoxGroup = (Fl_Group*)(consoleGroup->child(1));
 	lastSinceBoxGroup->show();
+	Fl_Group* lastSinceFileReadingErrorGroup = (Fl_Group*)(lastSinceBoxGroup->child(3));
 
 
 	Fl_Group* outputViewGroup = (Fl_Group*)(lastSinceBoxGroup->child(1));
@@ -39,14 +42,26 @@ void mainGUI::lastSinceShow_cb(Fl_Widget* obj, void* p) {
 
 	Fl_Group* allLastSinceEntriesGroup = (Fl_Group*)(outputViewGroup->child(1));
 
-	fileManager fileManagerlastSinceShow_cb;
-	int fileReadingStatus = fileManagerlastSinceShow_cb.readLastSinceFile();
+	fileManager fileManagerLastSince;
 
-	//if file reading works 0 yes, 1+ no
+	//check if directory exist, if true, skip ;; if false, create directory then continue
+	if (fileManagerLastSince.does_Directory_Exist() == false) {
+
+		//TODO check for sys permissions first so this doesnt result in crash error
+		fileManagerLastSince.create_Directory();
+	}
+
+	int fileReadingStatus = fileManagerLastSince.readLastSinceFile();
+
+	//if file reading works 0 yes, 1 = file not found, 2 = folder not found
+	// TODO change this all into its own class
+
+
 	if (fileReadingStatus == 0) {
+		dataFileExists = true;
 		outputViewGroup->show();
-		fileManagerlastSinceShow_cb.readLastSinceFiletoData();
-		std::vector<lastSinceEntries> lsEntriesVector = fileManagerlastSinceShow_cb.getlsEntriesList();
+		fileManagerLastSince.readLastSinceFiletoData();
+		std::vector<lastSinceEntries> lsEntriesVector = fileManagerLastSince.getlsEntriesList();
 
 		//code for putting lsEntries into the rightside of the screen, all entries must be checkboxes
 		allLastSinceEntriesGroup->clear();
@@ -69,7 +84,7 @@ void mainGUI::lastSinceShow_cb(Fl_Widget* obj, void* p) {
 			lsEntryName = lsEntriesVector[i].name;
 
 			//finding the time difference between the entry and current time before adding to the GUI
-			timeDiff = fileManagerlastSinceShow_cb.getTimeDifferenceAsString(lsEntriesVector[i].lastTimeDoneAsSeconds);
+			timeDiff = fileManagerLastSince.getTimeDifferenceAsString(lsEntriesVector[i].lastTimeDoneAsSeconds);
 			lsEntryTime += timeDiff;
 			lsEntryString += lsEntryName;
 			lsEntryString += " ";
@@ -89,11 +104,18 @@ void mainGUI::lastSinceShow_cb(Fl_Widget* obj, void* p) {
 	} //end of successful file load
 
 	else if (fileReadingStatus == 1) {
-		std::cout << "file reading error";
-		Fl_Group* lastSinceFileReadingErrorGroup = (Fl_Group*)(lastSinceBoxGroup->child(3));
+		dataFileExists = false;
+		std::cout << "file reading status error 1";
+		lastSinceFileReadingErrorGroup->label("no files exist,\n go click on + sign");
 		lastSinceFileReadingErrorGroup->show();
 	}
 
+	else if (fileReadingStatus == 2) {
+		dataFileExists = false;
+		std::cout << "file reading status error 2";
+		lastSinceFileReadingErrorGroup->label("no data folder exists, prolly a permission error. give exe admin privilege");
+		lastSinceFileReadingErrorGroup->show();
+	}
 
 
 
@@ -139,14 +161,12 @@ void mainGUI::lsUpdateBtn_cb(Fl_Widget* obj, void* p) {
 		}
 	}
 
-	//warning! necessary for now to give scope to writeLastSinceToFile() for lsentries data since it can't access the one in lastsinceshow_cb. this is definitely a tech debt starting up
+	//warning! necessary for now to give scope to writeLastSinceToFile() for lsentries data since it can't access the one in lastsinceshow_cb. this is definitely a tech debt starting up. making file manager global gives its own error of crashing/double entries being written
 	fileManager fileManagerInsidelsUpdateBtncb;
 	fileManagerInsidelsUpdateBtncb.readLastSinceFile();
 	fileManagerInsidelsUpdateBtncb.readLastSinceFiletoData();
 	fileManagerInsidelsUpdateBtncb.writeLastSinceToFile(posOfCheckedButtons);
 	fileManagerInsidelsUpdateBtncb.shuffleFileName();
-
-
 
 	//redrawing the entire lsGroup view
 	lastSinceShow_cb(lastSinceBtn, (void*) p); // warning! definitely a memory leak doing this probably
@@ -164,22 +184,42 @@ void mainGUI::fanSpeedShow_cb(Fl_Widget* obj, void* p) {
 
 
 void mainGUI::lsGearBoxBtn_cb(Fl_Widget* obj, void* p) {
+
+	Fl_Double_Window* mainWindow = (Fl_Double_Window*)(obj->parent()->parent()->parent()->parent()->parent());
+	Fl_Group* toolbarGroup = (Fl_Group*)(mainWindow->child(1));
+	Fl_Button* lastSinceBtn = (Fl_Button*)(toolbarGroup->child(1));
+
+
 	Fl_Group* lastSinceBoxGroup = (Fl_Group*)(obj->parent()->parent()->parent());
 	Fl_Group* outputViewGroup = (Fl_Group*)(lastSinceBoxGroup->child(1));
 	Fl_Group* editViewGroup = (Fl_Group*)(lastSinceBoxGroup->child(2));
+	Fl_Group* lsFileReadingErrorViewGroup = (Fl_Group*)(lastSinceBoxGroup->child(3));
 
+
+
+	//lsFileReadingErrorViewGroup->hide();
 	if (isLSEditViewShowing == false) {
-
 		outputViewGroup->hide();
 		editViewGroup->show();
-
+		lsFileReadingErrorViewGroup->hide();
 		isLSEditViewShowing = true;
 	}
-	else if (isLSEditViewShowing == true) {
+	else if (isLSEditViewShowing == true && dataFileExists == true) {
 
 		outputViewGroup->show();
-		editViewGroup->hide();
 
+		editViewGroup->hide();
+		lsFileReadingErrorViewGroup->hide();
+		isLSEditViewShowing = false;
+
+		//redrawing the entire lsGroup view
+		lastSinceShow_cb(lastSinceBtn, (void*)p); // warning! definitely a memory leak doing this probably
+	}
+
+	else if (isLSEditViewShowing == true && dataFileExists == false) {
+		outputViewGroup->hide();
+		editViewGroup->hide();
+		lsFileReadingErrorViewGroup->show();
 		isLSEditViewShowing = false;
 	}
 
@@ -187,8 +227,27 @@ void mainGUI::lsGearBoxBtn_cb(Fl_Widget* obj, void* p) {
 }
 
 void mainGUI::lsEntryTextInputBtn_cb(Fl_Widget* obj, void* p) {
-
+	
 	Fl_Group* lsAddEntryGroup = (Fl_Group*)(obj->parent());
+	Fl_Group* editView = (Fl_Group*)(lsAddEntryGroup->parent());
+	Fl_Group* lsEditTextBottomView = (Fl_Group*)(editView->child(1));
+
 	Fl_Input* lsEntryTextInput = (Fl_Input * )(lsAddEntryGroup->child(0));
-	lsEntryTextInput->value("eh, going to text file is easier goto data/lastSinceEntry.txt");
+
+	Fl_Output* lsEntryTextConfirmationOutput = (Fl_Output* )(lsEditTextBottomView->child(0));
+
+	std::string entryName = lsEntryTextInput->value();
+
+	
+	//warning! main file + backup being overwritten to blank
+	fileManager fileManagerAddingEntry;
+	fileManagerAddingEntry.readLastSinceFile();
+	fileManagerAddingEntry.readLastSinceFiletoData();
+	fileManagerAddingEntry.writeLastSinceSingleEntryToFile(entryName);
+	dataFileExists = true;
+
+	// TODO add a function if input is not added successfully
+	std::string outputString = entryName + " entered successfully";
+	lsEntryTextConfirmationOutput->value(outputString.c_str());
+	lsEntryTextInput->value("");
 }
